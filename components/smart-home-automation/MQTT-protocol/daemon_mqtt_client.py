@@ -25,7 +25,7 @@ config = {
     "mqttBaseTopic": "phoniebox",  # MQTT base topic
     "mqttClientId": "phoniebox",  # MQTT client ID
     "mqttHostname": "openHAB",  # MQTT server hostname
-    "mqttPort": 8883,  # MQTT server port (typically 1883 for unencrypted, 8883 for encrypted)
+    "mqttPort": 1883,  # MQTT server port (typically 1883 for unencrypted, 8883 for encrypted)
     "mqttUsername": "",  # username for user/pass based authentication
     "mqttPassword": "",  # password for user/pass based authentication
     "mqttCA": "/home/pi/MQTT/mqtt-ca.crt",  # path to server certificate for certificate-based authentication
@@ -204,9 +204,12 @@ def on_message(client, userdata, message):
     message_subtopic = regex_extract.group(2).lower()
     message_payload = message.payload.decode("utf-8")
 
-    if message_topic == "cmd":
-        processCmd(message_subtopic, message_payload)
-
+    if message_subtopic == "cmd":
+        processCmd(message_payload)
+    #removes parameter commands for compatibility with Home assistant MQTT select entity, original was
+    #if message_topic == "cmd":
+    #   processCmd(message_subtopic, message_payload)
+    
     elif message_topic == "get":
         processGet(message_subtopic)
 
